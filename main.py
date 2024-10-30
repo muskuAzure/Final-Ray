@@ -196,7 +196,7 @@ def renderVolume2():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16.0/9.0
     main_camera.img_width = 360  # Higher resolution
-    main_camera.samples_per_pixel = 10
+    main_camera.samples_per_pixel = 500
     main_camera.max_depth = 50   # Increased for better volume effects
     main_camera.vertical_fov = 60
     # Position camera to better see volumes
