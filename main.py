@@ -280,7 +280,7 @@ def renderTest():
     main_camera.aspect_ratio = 16/9
     main_camera.img_width = 3840 
     main_camera.center = rtu.Vec3(0,0,0)
-    main_camera.samples_per_pixel = 200
+    main_camera.samples_per_pixel = 120
     main_camera.max_depth = 5
     main_camera.vertical_fov = 60
     main_camera.look_from = rtu.Vec3(0, 0, 10)
