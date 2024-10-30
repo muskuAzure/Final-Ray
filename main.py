@@ -13,7 +13,7 @@ def renderDoF():
     main_camera.aspect_ratio = 16.0/9.0
     main_camera.img_width = 480
     main_camera.center = rtu.Vec3(0,0,0)
-    main_camera.samples_per_pixel = 222
+    main_camera.samples_per_pixel = 10
     main_camera.max_depth = 5
     main_camera.vertical_fov = 60
     main_camera.look_from = rtu.Vec3(-2, 2, 1)
@@ -56,8 +56,8 @@ def renderDoF():
     renderer.render()
     renderer.write_img2png('week10_no_jitter_DoF.png')
     
-    renderer.render_jittered()
-    renderer.write_img2png('week10_jitter_DoF.png')
+    #renderer.render_jittered()
+    #renderer.write_img2png('week10_jitter_DoF.png')
 
 def renderMoving():
     main_camera = rtc.Camera()
@@ -196,7 +196,7 @@ def renderVolume2():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16.0/9.0
     main_camera.img_width = 360  # Higher resolution
-    main_camera.samples_per_pixel = 100
+    main_camera.samples_per_pixel = 10
     main_camera.max_depth = 50   # Increased for better volume effects
     main_camera.vertical_fov = 60
     # Position camera to better see volumes
@@ -272,7 +272,145 @@ def renderVolume2():
     renderer.render_jittered()
     renderer.write_img2png('volume_scene.png')
 
+
+
+
+def renderTest():
+    main_camera = rtc.Camera()
+    main_camera.aspect_ratio = 16/9
+    main_camera.img_width = 3840 
+    main_camera.center = rtu.Vec3(0,0,0)
+    main_camera.samples_per_pixel = 200
+    main_camera.max_depth = 5
+    main_camera.vertical_fov = 60
+    main_camera.look_from = rtu.Vec3(0, 0, 10)
+    main_camera.look_at = rtu.Vec3(0, 0, 0)
+
+    aperture = 1.0
+    focus_distance = 5.0
+    main_camera.init_camera(aperture, focus_distance)
+
+    scene = rts.Scene()  # Light blue sky background
+
+    # Light Source - Placed above to cast shadows downward
+    light_main = rto.Sphere(
+        rtu.Vec3(0, 3, 1.25),
+        0.7,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+    # rtl.Diffuse_light(rtu.Color(1.0, 0.9, 0.5))
+
+    light_test = rto.Sphere(
+        rtu.Vec3(-5, 3, 3),
+        0.15,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    light_test2 = rto.Sphere(
+        rtu.Vec3(5, 3, 3),
+        0.15,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    scene.add_object(light_main)
+    #scene.add_object(light_test)
+    #scene.add_object(light_test2)
+
+
+
+    # Materials
+    mat_black = rtm.Lambertian(rtu.Color(0, 0, 0))
+    mat_yellow = rtm.Lambertian(rtu.Color(1, 1, 0.7))
+    mat_green = rtm.Lambertian(rtu.Color(0.7, 1, 0.6))
+    mat_pink = rtm.Lambertian(rtu.Color(0.8, 0, 0.6))
+    mat_white = rtm.Lambertian(rtu.Color(1, 1, 1))
+
+    mat_phong = rtm.Phong(rtu.Color(1,1,1),5,8,20)
+    
+
+
+    mat_metal = rtm.Metal(rtu.Color(0.8,0.8,0.8), 0.8)
+    mat_metal_gold = rtm.Metal(rtu.Color(1.0, 0.933, 0.51), 0.8)
+
+
+    # Mat texture
+    tex_wood = rtt.ImageTexture("./textures/wood.png")
+    mat_tex_wood = rtm.TextureColor(tex_wood) 
+
+    tex_wood_block = rtt.ImageTexture("./textures/wood_block.jpeg")
+    mat_tex_wood_block = rtm.TextureColor(tex_wood_block)             
+
+    # Room
+    room = rto.Box(rtu.Vec3(-10, -10, 0), rtu.Vec3(10, 5.25, 15), mat_white)
+    #scene.add_object(room)
+    wall = rto.Quad(rtu.Vec3(-12, -10, 0), rtu.Vec3(30, 0, 0), rtu.Vec3(0, 30, 0), mat_phong)
+    scene.add_object(wall)
+
+    # Background Plane for Shadow - Vertical Rectangle
+    plane = rto.Quad(rtu.Vec3(-2.5, -4.5, 0), rtu.Vec3(5, 0, 0), rtu.Vec3(0, 9, 0), mat_tex_wood)
+    scene.add_object(plane)
+
+    # Lamp
+    center = rtu.Vec3(0, 2.5, 3)  # Center of the tilted box
+    x_dir = rtu.Vec3(1, 0, 0)    # Local x-axis direction
+    y_dir = rtu.Vec3(0, 0.707, -0.707)  # Tilt y-axis by 45 degrees in z direction
+    z_dir = rtu.Vec3(0, 0.707, 0.707)  # Tilt z-axis accordingly for orthogonality
+    x_length = 0.5
+    y_length = 0.5
+    z_length = 0.5
+
+    lamp_body_tilted_box = rto.TiltedBox(center, x_dir, y_dir, z_dir, x_length, y_length, z_length, mat_black)
+    scene.add_object(lamp_body_tilted_box)
+
+    center = rtu.Vec3(0, 3, 4)  # Center of the tilted box
+    x_dir = rtu.Vec3(1, 0, 0)    # Local x-axis direction
+    y_dir = rtu.Vec3(0, 0.707, 0.707)  # Tilt y-axis by 45 degrees in z direction
+    z_dir = rtu.Vec3(0,-0.707, 0.707)  # Tilt z-axis accordingly for orthogonality
+    x_length = 0.2
+    y_length = 0.2
+    z_length = 1.75
+
+    lamp_stand_tilted_box = rto.TiltedBox(center, x_dir, y_dir, z_dir, x_length, y_length, z_length, mat_black)
+    scene.add_object(lamp_stand_tilted_box)
+
+
+    # Letters (e.g., "H" and "I") as shadow-casting objects
+    h_part1_left_box = rto.Box(rtu.Vec3(-1, 0, 0), rtu.Vec3(-0.8, 0.2, 0.5), mat_tex_wood_block)
+    h_part2_right_box = rto.Box(rtu.Vec3(-0.1, 0, 0), rtu.Vec3(0.1, 0.2, 0.5), mat_tex_wood_block)
+    h_part3_mid_box = rto.Box(rtu.Vec3(-0.975, -0.8, 0), rtu.Vec3(-0.1, -0.6, 0.07), mat_tex_wood_block)
+
+    i_part1 = rto.Box(rtu.Vec3(0.65, 0, 0), rtu.Vec3(0.85, 0.2, 0.1), mat_tex_wood_block)
+    i_part2 = rto.Box(rtu.Vec3(0.8, -0.8, 0), rtu.Vec3(1, -0.6, 0.3), mat_tex_wood_block)
+
+
+    # Frame
+    frame_top_box = rto.Box(rtu.Vec3(-2.75, 4.5, 0), rtu.Vec3(2.5, 4.75, 0.05), mat_metal)
+    frame_under_box = rto.Box(rtu.Vec3(-2.5, -4.75, 0), rtu.Vec3(2.75, -4.5, 0.05), mat_metal)
+    frame_left_box =  rto.Box(rtu.Vec3(-2.75, 4.5, 0), rtu.Vec3(-2.5, -4.75, 0.05), mat_metal)
+    frame_right_box = rto.Box(rtu.Vec3(2.5, 4.75, 0), rtu.Vec3(2.75, -4.5, 0.05), mat_metal)
+
+    scene.add_object(frame_top_box)
+    scene.add_object(frame_under_box)
+    scene.add_object(frame_left_box)
+    scene.add_object(frame_right_box)
+
+ 
+
+    # Add objects to the scene
+    scene.add_object(h_part1_left_box)
+    scene.add_object(h_part2_right_box)
+    scene.add_object(h_part3_mid_box)
+    scene.add_object(i_part1)
+    scene.add_object(i_part2)
+    # Integrator and Renderer setup
+    intg = rti.Integrator(bDlight=True, bSkyBG=False)
+    renderer = rtren.Renderer(main_camera, intg, scene)
+    
+    # Render
+    renderer.render_jittered()
+    renderer.write_img2png('shadow_art.png')
+
 if __name__ == "__main__":
-    renderVolume2()
+    renderTest()
 
 

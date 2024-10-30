@@ -346,3 +346,45 @@ class ConstantMedium(Object):
         hit_normal = rtu.Vec3(1, 0, 0)
 
         return rtu.Hitinfo(hit_p, hit_normal, hit_t, self.material)
+
+class TiltedBox(Object):
+    def __init__(self, center, x_dir, y_dir, z_dir, x_length, y_length, z_length, mMat=None) -> None:
+        super().__init__()
+        self.center = center
+        self.x_dir = rtu.Vec3.unit_vector(x_dir) * x_length
+        self.y_dir = rtu.Vec3.unit_vector(y_dir) * y_length
+        self.z_dir = rtu.Vec3.unit_vector(z_dir) * z_length
+        self.material = mMat
+        
+        # Calculate the corners of the tilted box
+        self.vertices = [
+            self.center + (self.x_dir * sign_x) + (self.y_dir * sign_y) + (self.z_dir * sign_z)
+            for sign_x in (-1, 1) for sign_y in (-1, 1) for sign_z in (-1, 1)
+        ]
+
+        # Define each face of the box as a quad
+        self.sides = [
+            Quad(self.vertices[0], self.vertices[1] - self.vertices[0], self.vertices[2] - self.vertices[0], mMat),
+            Quad(self.vertices[4], self.vertices[5] - self.vertices[4], self.vertices[6] - self.vertices[4], mMat),
+            Quad(self.vertices[0], self.vertices[4] - self.vertices[0], self.vertices[2] - self.vertices[0], mMat),
+            Quad(self.vertices[1], self.vertices[5] - self.vertices[1], self.vertices[3] - self.vertices[1], mMat),
+            Quad(self.vertices[0], self.vertices[1] - self.vertices[0], self.vertices[4] - self.vertices[0], mMat),
+            Quad(self.vertices[2], self.vertices[3] - self.vertices[2], self.vertices[6] - self.vertices[2], mMat)
+        ]
+
+    def add_material(self, mMat):
+        self.material = mMat
+        for side in self.sides:
+            side.add_material(mMat)
+
+    def intersect(self, rRay, cInterval):
+        current_interval = rtu.Interval(cInterval.min_val, cInterval.max_val)
+        closest_hit = None
+
+        for side in self.sides:
+            hit_info = side.intersect(rRay, current_interval)
+            if hit_info is not None:
+                current_interval.max_val = hit_info.getT()
+                closest_hit = hit_info
+
+        return closest_hit

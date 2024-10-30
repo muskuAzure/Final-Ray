@@ -53,7 +53,7 @@ class Integrator():
                         if NdotLe < 1e-06:
                             NdotLe = 0.0
                         direct_L_i = light.material.emitting()
-                        Le = Le + (Le_BRDF * direct_L_i * NdotLe)
+                        Le = Le + (Le_BRDF * direct_L_i * NdotLe * min(1.0, 1.0/max_distance))
 
             # return the color
             # Le*attennuation_color upto the point before reflection models otherwise it is not correct.
@@ -62,7 +62,7 @@ class Integrator():
                 NdotL = 0.0
             L_i = self.compute_scattering(sinfo.scattered_ray, scene, maxDepth-1)
             Fr =  hmat.BRDF(rGen_ray, sinfo.scattered_ray, hinfo)
-            return Le + ( Fr * L_i * NdotL )
+            return Le + ( Fr * L_i * NdotL * min(1.0, 1.0/max_distance))
 
         if self.bool_sky_background:
             return scene.get_sky_background_color(rGen_ray)
