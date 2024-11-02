@@ -278,11 +278,7 @@ def renderVolume2():
 def renderShadowArt():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16/9
-<<<<<<< HEAD
-    main_camera.img_width = 1920
-=======
     main_camera.img_width = 1920 
->>>>>>> eb862c09dd5903fffdfeea27ab1aa46377d17a2d
     main_camera.center = rtu.Vec3(0,0,0)
     main_camera.samples_per_pixel = 100
     main_camera.max_depth = 6
