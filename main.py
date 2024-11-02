@@ -275,15 +275,19 @@ def renderVolume2():
 
 
 
-def renderTest():
+def renderShadowArt():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16/9
+<<<<<<< HEAD
     main_camera.img_width = 1920
+=======
+    main_camera.img_width = 1920 
+>>>>>>> eb862c09dd5903fffdfeea27ab1aa46377d17a2d
     main_camera.center = rtu.Vec3(0,0,0)
     main_camera.samples_per_pixel = 100
     main_camera.max_depth = 6
     main_camera.vertical_fov = 60
-    main_camera.look_from = rtu.Vec3(0, 0, 10)
+    main_camera.look_from = rtu.Vec3(0, 10, 1)
     main_camera.look_at = rtu.Vec3(0, 0, 0)
 
     aperture = 1.0
@@ -324,6 +328,8 @@ def renderTest():
     mat_green = rtm.Lambertian(rtu.Color(0.7, 1, 0.6))
     mat_pink = rtm.Lambertian(rtu.Color(0.8, 0, 0.6))
     mat_white = rtm.Lambertian(rtu.Color(1, 1, 1))
+    mat_gray = rtm.Lambertian(rtu.Color(0.8,0.8,0.8))
+
 
     mat_phong = rtm.Phong(rtu.Color(1,1,1),5,8,20)
     
@@ -384,10 +390,10 @@ def renderTest():
 
 
     # Frame
-    frame_top_box = rto.Box(rtu.Vec3(-2.75, 4.5, 0), rtu.Vec3(2.5, 4.75, 0.05), mat_metal)
-    frame_under_box = rto.Box(rtu.Vec3(-2.5, -4.75, 0), rtu.Vec3(2.75, -4.5, 0.05), mat_metal)
-    frame_left_box =  rto.Box(rtu.Vec3(-2.75, 4.5, 0), rtu.Vec3(-2.5, -4.75, 0.05), mat_metal)
-    frame_right_box = rto.Box(rtu.Vec3(2.5, 4.75, 0), rtu.Vec3(2.75, -4.5, 0.05), mat_metal)
+    frame_top_box = rto.Box(rtu.Vec3(-2.75, 4.5, 0), rtu.Vec3(2.5, 4.75, 0.05), mat_gray)
+    frame_under_box = rto.Box(rtu.Vec3(-2.5, -4.75, 0), rtu.Vec3(2.75, -4.5, 0.05), mat_gray)
+    frame_left_box =  rto.Box(rtu.Vec3(-2.75, 4.5, 0), rtu.Vec3(-2.5, -4.75, 0.05), mat_gray)
+    frame_right_box = rto.Box(rtu.Vec3(2.5, 4.75, 0), rtu.Vec3(2.75, -4.5, 0.05), mat_gray)
 
     scene.add_object(frame_top_box)
     scene.add_object(frame_under_box)
@@ -410,7 +416,329 @@ def renderTest():
     renderer.render_jittered()
     renderer.write_img2png('shadow_art.png')
 
+def renderMuseum():
+    main_camera = rtc.Camera()
+    main_camera.aspect_ratio = 16 / 9
+    main_camera.img_width = 480
+    main_camera.center = rtu.Vec3(0, 0, 0)
+    main_camera.samples_per_pixel = 2
+    main_camera.max_depth = 5
+    main_camera.vertical_fov = 65
+
+
+    # Adjusted camera position and target for slight left rotation
+    main_camera.look_from = rtu.Vec3(-30, 20, 45)   # Original height and distance
+    main_camera.look_at = rtu.Vec3(35, 0, 0)        # Adjusted to rotate more left
+
+    aperture = 1.0
+    focus_distance = 5.0
+    main_camera.init_camera(aperture, focus_distance)
+
+    scene = rts.Scene()  # Light blue sky background
+
+    # Light Source - Placed above to cast shadows downward
+    light_main = rto.Sphere(
+        rtu.Vec3(20, 40,100),
+        5,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+ 
+
+    light_main2 = rto.Sphere(
+        rtu.Vec3(20, 30,-100),
+        3,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    light_main3 = rto.Sphere(
+        rtu.Vec3(180, 40, 10),
+        5,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    light_main4 = rto.Sphere(
+        rtu.Vec3(-40, 40, 30),
+        3,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+ 
+ 
+    scene.add_object(light_main)
+    scene.add_object(light_main2)
+    scene.add_object(light_main3)
+    scene.add_object(light_main4)
+
+    # light test
+    light_test = rto.Sphere(
+        rtu.Vec3(55, 35, -10),
+        3,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    #scene.add_object(light_test)
+
+
+    # Materials
+    mat_black = rtm.Lambertian(rtu.Color(0, 0, 0))
+    mat_yellow = rtm.Lambertian(rtu.Color(1, 1, 0.7))
+    mat_green = rtm.Lambertian(rtu.Color(0.7, 1, 0.6))
+    mat_pink = rtm.Lambertian(rtu.Color(0.8, 0, 0.6))
+    mat_white = rtm.Lambertian(rtu.Color(1, 1, 1))
+    mat_gray = rtm.Lambertian(rtu.Color(0.5,0.5,0.5))
+    mat_orange = rtm.Lambertian(rtu.Color(1,0.5,0.2))
+
+    mat_phong = rtm.Phong(rtu.Color(1,1,1),5,8,20)
+    
+    mat_metal = rtm.Metal(rtu.Color(0.8,0.8,0.8), 0.8)
+    mat_metal_gold = rtm.Metal(rtu.Color(1.0, 0.933, 0.51), 0.8)
+
+
+
+    # Room
+
+    floor = rto.Quad(rtu.Vec3(-200, 0, 200), rtu.Vec3(0, 0, -400), rtu.Vec3(400, 0, 0 ), mat_gray)
+    scene.add_object(floor)
+
+
+    left_wall = rto.Box(rtu.Vec3(-30, 0, -20), rtu.Vec3(30, 50, 0), mat_green)
+    scene.add_object(left_wall)
+
+    right_wall = rto.Box(rtu.Vec3(80, 0, 0), rtu.Vec3(100, 60, 90), mat_pink)
+    scene.add_object(right_wall)
+
+    left_wall_above = rto.Box(rtu.Vec3(30, 35, -20), rtu.Vec3(80, 60, 0), mat_pink)
+    scene.add_object(left_wall_above)
+
+    right_wall_above = rto.Box(rtu.Vec3(30, 30, 0), rtu.Vec3(40, 50, 60), mat_green)
+    #scene.add_object(right_wall_above)
+
+
+    second_right_wall = rto.Box(rtu.Vec3(80, 0, -50), rtu.Vec3(100, 60, -30), mat_orange)
+    scene.add_object(second_right_wall)
+
+    second_left_wall = rto.Quad(rtu.Vec3(100, 0, -40), rtu.Vec3(0, 60, 0), rtu.Vec3(80, 0, 0), mat_metal_gold)
+    scene.add_object(second_left_wall)
+
+
+
+    # textures
+    abstract_painting = rtt.ImageTexture("./textures/abstract.png")
+    mat_abstract_painting = rtm.TextureColor(abstract_painting) 
+
+    train_painting = rtt.ImageTexture("./textures/train_station.jpg")
+    mat_train_painting = rtm.TextureColor(train_painting) 
+
+    woman_painting = rtt.ImageTexture("./textures/woman.png")
+    mat_woman_painting = rtm.TextureColor(woman_painting) 
+
+    flower_painting = rtt.ImageTexture("./textures/flower.png")
+    mat_flower_painting = rtm.TextureColor(flower_painting) 
+
+
+    dlight = rtl.Diffuse_light(rtu.Color(0.9, 0.9, 0.9))
+
+    quad_light = rto.Quad(rtu.Vec3(-30, 0, 100), rtu.Vec3(0, 80, 0), rtu.Vec3(180, 0, 0), dlight)
+    #scene.add_object(quad_light)
+
+
+
+    # Painting
+    painting_left_wall_1 = rto.Quad(rtu.Vec3(-20, 10, 0), rtu.Vec3(0, 17, 0), rtu.Vec3( 17, 0, 0), mat_abstract_painting)
+    painting_left_wall_2 = rto.Quad(rtu.Vec3(5, 15, 0), rtu.Vec3(0, 8, 0), rtu.Vec3(13, 0, 0), mat_train_painting)
+    painting_left_wall_3 = rto.Quad(rtu.Vec3(120, 15, -30), rtu.Vec3(0, 15, 0), rtu.Vec3(15, 0, 0), mat_woman_painting)
+
+
+    painting_right_wall = rto.Quad(rtu.Vec3(80, 12.5, 30), rtu.Vec3(0, 20, 0), rtu.Vec3(0, 0, 30), mat_flower_painting)
+
+    scene.add_object(painting_left_wall_1)
+    scene.add_object(painting_left_wall_2)
+    scene.add_object(painting_left_wall_3)
+
+
+    scene.add_object(painting_right_wall)
+
+
+
+ 
+
+
+
+    # Integrator and Renderer setup
+    intg = rti.Integrator()
+    renderer = rtren.Renderer(main_camera, intg, scene)
+    
+    # Render
+    renderer.render_jittered()
+    renderer.write_img2png('museum.png')
+
+def renderMuseum2():
+    main_camera = rtc.Camera()
+    main_camera.aspect_ratio = 16 / 9
+    main_camera.img_width = 480
+    main_camera.center = rtu.Vec3(0, 0, 0)
+    main_camera.samples_per_pixel = 20
+    main_camera.max_depth = 5
+    main_camera.vertical_fov = 65
+
+
+    # Adjusted camera position and target for slight left rotation
+    main_camera.look_from = rtu.Vec3(-30, 20, 45)   # Original height and distance
+    main_camera.look_at = rtu.Vec3(35, 0, 0)        # Adjusted to rotate more left
+
+    aperture = 1.0
+    focus_distance = 5.0
+    main_camera.init_camera(aperture, focus_distance)
+
+    scene = rts.Scene()  # Light blue sky background
+
+    # Light Source - Placed above to cast shadows downward
+    light_main = rto.Sphere(
+        rtu.Vec3(30, 35,100),
+        2,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+ 
+
+    light_main2 = rto.Sphere(
+        rtu.Vec3(-90, 45,-65),
+        2,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    light_main3 = rto.Sphere(
+        rtu.Vec3(180, 30, 10),
+        5,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    light_main4 = rto.Sphere(
+        rtu.Vec3(40, 35,50),
+        3,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+ 
+ 
+    scene.add_object(light_main)
+    scene.add_object(light_main2)
+    scene.add_object(light_main3)
+    #scene.add_object(light_main4)
+
+    # light test
+    light_test = rto.Sphere(
+        rtu.Vec3(-50, 35, 60),
+        1.5,
+        rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
+    )
+
+    scene.add_object(light_test)
+
+
+    # Materials
+    mat_black = rtm.Lambertian(rtu.Color(0, 0, 0))
+    mat_yellow = rtm.Lambertian(rtu.Color(1, 1, 0.7))
+    mat_green = rtm.Lambertian(rtu.Color(0.7, 1, 0.6))
+    mat_pink = rtm.Lambertian(rtu.Color(0.8, 0, 0.6))
+    mat_white = rtm.Lambertian(rtu.Color(1, 1, 1))
+    mat_gray = rtm.Lambertian(rtu.Color(0.5,0.5,0.5))
+    mat_orange = rtm.Lambertian(rtu.Color(1,0.5,0.2))
+
+    mat_phong_gray = rtm.Phong(rtu.Color(0.5,0.5,0.5),5,8,20)
+    mat_phong_white = rtm.Phong(rtu.Color(1,1,1),5,8,20)
+
+    
+    mat_metal = rtm.Metal(rtu.Color(0.8,0.8,0.8), 0.8)
+    mat_metal_gold = rtm.Metal(rtu.Color(1.0, 0.933, 0.51), 0.8)
+
+
+
+    # Room
+
+    floor = rto.Quad(rtu.Vec3(-200, 0, 200), rtu.Vec3(0, 0, -400), rtu.Vec3(400, 0, 0 ), mat_phong_gray)
+    scene.add_object(floor)
+
+
+    left_wall = rto.Box(rtu.Vec3(-60, 0, -20), rtu.Vec3(30, 50, 0), mat_phong_white)
+    #scene.add_object(left_wall)
+
+    left_wall_quad = rto.Quad(rtu.Vec3(-60, 0, 0), rtu.Vec3(90, 0, 0), rtu.Vec3(0, 50, 0 ), mat_phong_white)
+    scene.add_object(left_wall_quad)
+
+
+    right_wall = rto.Box(rtu.Vec3(80, 0, 0), rtu.Vec3(100, 60, 90), mat_phong_white)
+    #scene.add_object(right_wall)
+
+    right_wall_quad = rto.Quad(rtu.Vec3(80, 0, 0), rtu.Vec3(0, 60, 0), rtu.Vec3(0, 0, 90 ), mat_phong_white)
+    scene.add_object(right_wall_quad)
+
+
+    left_wall_above = rto.Box(rtu.Vec3(30, 35, -20), rtu.Vec3(80, 60, 0), mat_phong_white)
+    scene.add_object(left_wall_above)
+
+    right_wall_above = rto.Box(rtu.Vec3(30, 35, 0), rtu.Vec3(40, 60, 90), mat_phong_white)
+    scene.add_object(right_wall_above)
+
+
+    second_right_wall = rto.Box(rtu.Vec3(80, 0, -50), rtu.Vec3(100, 60, -30), mat_phong_white)
+    scene.add_object(second_right_wall)
+
+    second_left_wall = rto.Quad(rtu.Vec3(100, 0, -40), rtu.Vec3(0, 60, 0), rtu.Vec3(80, 0, 0), mat_phong_white)
+    scene.add_object(second_left_wall)
+
+
+
+    # textures
+    abstract_painting = rtt.ImageTexture("./textures/abstract.png")
+    mat_abstract_painting = rtm.TextureColor(abstract_painting) 
+
+    train_painting = rtt.ImageTexture("./textures/train_station.jpg")
+    mat_train_painting = rtm.TextureColor(train_painting) 
+
+    woman_painting = rtt.ImageTexture("./textures/woman.png")
+    mat_woman_painting = rtm.TextureColor(woman_painting) 
+
+    flower_painting = rtt.ImageTexture("./textures/flower.png")
+    mat_flower_painting = rtm.TextureColor(flower_painting) 
+
+
+    dlight = rtl.Diffuse_light(rtu.Color(0.9, 0.9, 0.9))
+
+    quad_light = rto.Quad(rtu.Vec3(-30, 0, 100), rtu.Vec3(0, 80, 0), rtu.Vec3(180, 0, 0), dlight)
+    #scene.add_object(quad_light)
+
+
+
+    # Painting
+    painting_left_wall_1 = rto.Quad(rtu.Vec3(-20, 10, 0), rtu.Vec3(0, 17, 0), rtu.Vec3( 17, 0, 0), mat_abstract_painting)
+    painting_left_wall_2 = rto.Quad(rtu.Vec3(5, 15, 0), rtu.Vec3(0, 8, 0), rtu.Vec3(13, 0, 0), mat_train_painting)
+    painting_left_wall_3 = rto.Quad(rtu.Vec3(120, 15, -30), rtu.Vec3(0, 15, 0), rtu.Vec3(15, 0, 0), mat_woman_painting)
+
+
+    painting_right_wall = rto.Quad(rtu.Vec3(80, 12.5, 30), rtu.Vec3(0, 20, 0), rtu.Vec3(0, 0, 30), mat_flower_painting)
+
+    scene.add_object(painting_left_wall_1)
+    scene.add_object(painting_left_wall_2)
+    scene.add_object(painting_left_wall_3)
+
+
+    scene.add_object(painting_right_wall)
+
+
+
+ 
+
+
+
+    # Integrator and Renderer setup
+    intg = rti.Integrator()
+    renderer = rtren.Renderer(main_camera, intg, scene)
+    
+    # Render
+    renderer.render_jittered()
+    renderer.write_img2png('museum2.png')
+
 if __name__ == "__main__":
-    renderTest()
+    #renderShadowArt()
+    #renderMuseum()
+    renderMuseum2()
 
 
