@@ -415,9 +415,9 @@ def renderShadowArt():
 def renderMuseum():
     main_camera = rtc.Camera()
     main_camera.aspect_ratio = 16 / 9
-    main_camera.img_width = 480
+    main_camera.img_width = 1920
     main_camera.center = rtu.Vec3(0, 0, 0)
-    main_camera.samples_per_pixel = 2
+    main_camera.samples_per_pixel = 110
     main_camera.max_depth = 5
     main_camera.vertical_fov = 65
 
@@ -442,7 +442,7 @@ def renderMuseum():
 
     light_main2 = rto.Sphere(
         rtu.Vec3(20, 30,-100),
-        3,
+        0.5,
         rtl.Diffuse_light(rtu.Color(1.0, 1.0, 1.0))
     )
 
@@ -482,6 +482,7 @@ def renderMuseum():
     mat_white = rtm.Lambertian(rtu.Color(1, 1, 1))
     mat_gray = rtm.Lambertian(rtu.Color(0.5,0.5,0.5))
     mat_orange = rtm.Lambertian(rtu.Color(1,0.5,0.2))
+    mat_blue = rtm.Lambertian(rtu.Color(0.5,0.9,1))
 
     mat_phong = rtm.Phong(rtu.Color(1,1,1),5,8,20)
     
@@ -497,19 +498,26 @@ def renderMuseum():
 
 
     left_wall = rto.Box(rtu.Vec3(-30, 0, -20), rtu.Vec3(30, 50, 0), mat_green)
-    scene.add_object(left_wall)
+    #scene.add_object(left_wall)
+
+    left_wall_quad = rto.Quad(rtu.Vec3(-60, 0, 0), rtu.Vec3(90, 0, 0), rtu.Vec3(0, 50, 0 ), mat_green)
+    scene.add_object(left_wall_quad)
 
     right_wall = rto.Box(rtu.Vec3(80, 0, 0), rtu.Vec3(100, 60, 90), mat_pink)
-    scene.add_object(right_wall)
+    #scene.add_object(right_wall)
 
-    left_wall_above = rto.Box(rtu.Vec3(30, 35, -20), rtu.Vec3(80, 60, 0), mat_pink)
+    right_wall_quad = rto.Quad(rtu.Vec3(80, 0, 0), rtu.Vec3(0, 60, 0), rtu.Vec3(0, 0, 90 ), mat_blue)
+    scene.add_object(right_wall_quad)
+
+    left_wall_above = rto.Box(rtu.Vec3(30, 40, -20), rtu.Vec3(80, 60, 0), mat_pink)
     scene.add_object(left_wall_above)
+    
 
     right_wall_above = rto.Box(rtu.Vec3(30, 30, 0), rtu.Vec3(40, 50, 60), mat_green)
     #scene.add_object(right_wall_above)
 
 
-    second_right_wall = rto.Box(rtu.Vec3(80, 0, -50), rtu.Vec3(100, 60, -30), mat_orange)
+    second_right_wall = rto.Box(rtu.Vec3(80, 0, -50), rtu.Vec3(100, 60, -27.5), mat_orange)
     scene.add_object(second_right_wall)
 
     second_left_wall = rto.Quad(rtu.Vec3(100, 0, -40), rtu.Vec3(0, 60, 0), rtu.Vec3(80, 0, 0), mat_metal_gold)
@@ -530,11 +538,8 @@ def renderMuseum():
     flower_painting = rtt.ImageTexture("./textures/flower.png")
     mat_flower_painting = rtm.TextureColor(flower_painting) 
 
-
-    dlight = rtl.Diffuse_light(rtu.Color(0.9, 0.9, 0.9))
-
-    quad_light = rto.Quad(rtu.Vec3(-30, 0, 100), rtu.Vec3(0, 80, 0), rtu.Vec3(180, 0, 0), dlight)
-    #scene.add_object(quad_light)
+    emer_exit = rtt.ImageTexture("./textures/emer_exit.jpg")
+    mat_emer_exit = rtm.TextureColor(emer_exit) 
 
 
 
@@ -553,10 +558,14 @@ def renderMuseum():
 
     scene.add_object(painting_right_wall)
 
+    # Object 
 
+    emer_exit_quad = rto.Quad(rtu.Vec3(47, 36, -5), rtu.Vec3(8, 0, 0), rtu.Vec3(0, 4, 0), mat_emer_exit)
 
- 
+    chair_box = rto.Box(rtu.Vec3(-15, 0, 17.5), rtu.Vec3(4.5, 6, 22.5), mat_white)
 
+    scene.add_object(emer_exit_quad)
+    scene.add_object(chair_box)
 
 
     # Integrator and Renderer setup
@@ -734,7 +743,7 @@ def renderMuseum2():
 
 if __name__ == "__main__":
     #renderShadowArt()
-    #renderMuseum()
-    renderMuseum2()
+    renderMuseum()
+    #renderMuseum2()
 
 
